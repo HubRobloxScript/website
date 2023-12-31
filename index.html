@@ -4,7 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clicker Game</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: lime; /* Set the background color to lime-green */
+        }
+
+        .game-container, .upgrades-container {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .click-button, .upgrade-button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .click-count {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 
@@ -18,7 +50,65 @@
     <div id="upgradeAuto" class="upgrade-button">Upgrade Autoclicker (Cost: 50)</div>
 </div>
 
-<script src="script.js"></script>
+<script>
+    let clicks = 0;
+    let manualClickValue = 1;
+    let manualClickUpgradeCost = 10;
+    let autoClickUpgradeCost = 50;
+    let autoClickLevel = 0;
+    let autoClickValue = 1;
+    let autoClickInterval;
+
+    document.getElementById('clickButton').addEventListener('click', () => {
+        clicks += manualClickValue;
+        updateClickCount();
+        disableAutoClickerTemporarily();
+    });
+
+    document.getElementById('upgradeManual').addEventListener('click', () => {
+        if (clicks >= manualClickUpgradeCost) {
+            clicks -= manualClickUpgradeCost;
+            manualClickUpgradeCost *= 2;
+            manualClickValue *= 2;
+            updateClickCount();
+            alert('Manual click upgraded!');
+        } else {
+            alert('Not enough clicks to upgrade!');
+        }
+    });
+
+    document.getElementById('upgradeAuto').addEventListener('click', () => {
+        if (clicks >= autoClickUpgradeCost) {
+            clicks -= autoClickUpgradeCost;
+            autoClickUpgradeCost *= 2;
+            autoClickLevel++;
+            autoClickValue *= 2;
+            updateClickCount();
+            alert('Autoclicker upgraded!');
+            startAutoClicker();
+        } else {
+            alert('Not enough clicks to upgrade!');
+        }
+    });
+
+    function updateClickCount() {
+        document.getElementById('clickCount').textContent = `Clicks: ${clicks}`;
+    }
+
+    function startAutoClicker() {
+        if (autoClickInterval) {
+            clearInterval(autoClickInterval);
+        }
+        autoClickInterval = setInterval(() => {
+            clicks += autoClickValue;
+            updateClickCount();
+        }, 1000);
+    }
+
+    function disableAutoClickerTemporarily() {
+        clearInterval(autoClickInterval);
+    }
+</script>
 
 </body>
 </html>
